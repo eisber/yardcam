@@ -1,5 +1,5 @@
 import os, uuid
-from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient, __version__
+from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 from filelock import Timeout, FileLock
 import re
 import requests
