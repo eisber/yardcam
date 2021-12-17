@@ -1,0 +1,3 @@
+azure-storage-blob
+filelock
+python-dotenv
