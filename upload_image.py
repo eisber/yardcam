@@ -4,10 +4,11 @@ from filelock import Timeout, FileLock
 import requests
 from datetime import datetime 
 from requests.auth import HTTPDigestAuth
-import dotenv
+from dotenv import load_dotenv
 
 # load .env
-dotenv.load()
+# dotenv.load()
+load_dotenv()
 
 AZURE_STORAGE_CONNECTION_STRING = os.environ.get("AZURE_STORAGE_CONNECTION_STRING")
 CONTAINER_NAME = os.environ.get("CONTAINER_NAME")
