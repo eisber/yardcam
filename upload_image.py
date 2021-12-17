@@ -18,7 +18,7 @@ PASSWORD = os.environ.get("PASSWORD")
 MAX_RESULT = os.environ.get("MAX_RESULT")
 
 # make sure we don't overlap when called multiple times in crontab
-lock = FileLock("/tmp/cam-image.lock", timeout=600)
+lock = FileLock("/tmp/cam-image.lock")
 with lock:
     # fetch image
     print(f"{datetime.now()} Get image...")

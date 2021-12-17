@@ -1,4 +1,26 @@
-import os, uuid
+import os
+import time
+# make sure we don't overlap when called multiple times in crontab
+LOCK_FILE = "/tmp/cam-video.pid"
+
+# lock = FileLock("/tmp/cam-video.lock", timeout=600)
+# with lock:
+if os.path.exists(LOCK_FILE):
+    print("old process running")
+    last_modified = os.path.getmtime(LOCK_FILE)
+    now = time.localtime()
+
+    if now - last_modified > 60*10:
+        print("very old process running")
+        # TODO: kill old process
+
+    exit(0)
+
+else:
+    with open(LOCK_FILE, "w") as f:
+        f.write(str(os.getpid()))
+
+
 from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 from filelock import Timeout, FileLock
 import re
@@ -20,10 +42,9 @@ PASSWORD = os.environ.get("PASSWORD")
 
 MAX_RESULT = os.environ.get("MAX_RESULT")
 
-# make sure we don't overlap when called multiple times in crontab
 
-lock = FileLock("/tmp/cam-video.lock", timeout=600)
-with lock:
+
+try:
     print(f"{datetime.now()} Get recordings...")
     r = requests.get(
             f"http://{HOSTNAME}/axis-cgi/record/list.cgi?maxnumberofresults={MAX_RESULT}&startatresultnumber=0&recordingid=all&sortorder=descending",
@@ -66,3 +87,5 @@ with lock:
 
                 blob_client.commit_block_list(
                         [str(i).zfill(6) for i in range(blob_id)])
+finally:
+    os.remove(LOCK_FILE)
